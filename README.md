@@ -37,6 +37,47 @@ A modern web application built with **Next.js (App Router)** to manage tasks and
 └── README.md
 ```
 
+## 📊 Database Schema & Relationships
+
+The project uses a JSON-based database (`db.json`) managed by `json-server`. The data model consists of three main entities with a one-to-many relationship between users and tasks.
+
+```mermaid
+erDiagram
+    USERS ||--o{ TASKS : "assigned to"
+    USERS {
+        string id PK
+        string name
+        string email
+        string role
+        string status
+        string avatar
+        string address
+        string birthdate
+        string phone
+        string occupation
+    }
+    TASKS {
+        string id PK
+        string title
+        string status
+        string priority
+        string userId FK
+    }
+    DASHBOARD_STATS {
+        int totalUsers
+        int activeTasks
+        int completedTasks
+        float TrendingPercentage
+        string Description
+        list monthlyViews
+    }
+```
+
+### Relationships
+
+- **One-to-Many (Users to Tasks)**: A single user can be assigned multiple tasks, linked by the `userId` field in the `tasks` entity.
+- **Dashboard Statistics**: The `dashboardStats-monthlyViews` object provides pre-aggregated data for the analytics dashboard, including a breakdown of traffic over the last 6 months.
+
 ## 🛠️ Getting Started
 
 ### Prerequisites
