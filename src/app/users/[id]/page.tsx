@@ -1,3 +1,4 @@
+import { DeleteUserDialog } from "@/components/user/delete-user-dialog";
 import { User } from "../user";
 import { Badge } from "@/components/ui/badge";
 
@@ -8,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import UpdateUserDialog from "@/components/user/update-user-dialog";
 import Image from "next/image";
 
 const roleColors: Record<string, string> = {
@@ -21,6 +23,30 @@ const statusColors: Record<string, string> = {
   Inactive: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<import("next").Metadata> {
+  const { id } = await params;
+  const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  try {
+    const res = await fetch(`${API_URL}/user/${id}`);
+    if (res.ok) {
+      const user: User = await res.json();
+      return {
+        title: user.name,
+        description: user.email,
+      };
+    }
+  } catch (error) {
+    console.error(error);
+  }
+  return {
+    title: "User Profile",
+  };
+}
+
 export default async function UserDetailPage({
   params,
 }: {
@@ -29,8 +55,8 @@ export default async function UserDetailPage({
   const { id } = await params;
 
   // Fetch user data using the id
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  const res = await fetch(`${apiUrl}/users/${id}`);
+  const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${API_URL}/user/${id}`);
 
   if (!res.ok) {
     // This will activate the closest `error.tsx` Error Boundary
@@ -41,15 +67,12 @@ export default async function UserDetailPage({
 
   return (
     <>
-      <title>{user.name}</title>
-      <meta name="description" content={user.email} />
-      <link rel="icon" href={user.avatar} />
-
       <div className="container w-full px-12 py-4 justify-items-center">
+
         <div className="w-full max-w-lg mx-auto">
           <Card className="w-lg flex-row items-center p-4 gap-4 hover:scale-105 transition-transform">
             <Image
-              src={user.avatar}
+              src={user.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=unkown"}
               alt={user.name}
               width={500}
               height={500}
@@ -89,6 +112,10 @@ export default async function UserDetailPage({
               </CardContent>
             </div>
           </Card>
+        </div>
+        <div className="flex gap-8 pt-8">
+          <UpdateUserDialog user={user} />
+          <DeleteUserDialog user={user} />
         </div>
       </div>
     </>

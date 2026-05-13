@@ -48,7 +48,7 @@ export function UserCard({ user }: { user: User | null }) {
     return (
       <Card className="w-full h-full flex-row items-center p-4 gap-4 hover:scale-105 transition-transform">
         <Image
-          src={user.avatar}
+          src={user.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=unkown"}
           alt={user.name}
           width={200}
           height={200}

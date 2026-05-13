@@ -1,23 +1,28 @@
 version: "3.8"
 
 services:
-  # ============================================
-  # Next.js Frontend
-  # ============================================
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
+      target: development # เลือกใช้ Stage Development
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-    container_name: tasks-frontend-standalone
+    container_name: tasks-frontend
     environment:
-      # Client-side (browser): ใช้ localhost เพราะ browser อยู่บน host machine
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
-      # Server-side (container): ใช้ host.docker.internal เพราะ container เข้า localhost ไม่ได้
       API_URL: ${API_URL}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    networks:
+      - shared_app_network
     restart: unless-stopped
+
+networks:
+  shared_app_network:
+    external: true
+    name: shared_app_network

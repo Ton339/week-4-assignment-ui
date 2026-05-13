@@ -1,17 +1,19 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import BackButton from "@/components/back-button";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "View your dashboard and statistics",
+};
+
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
   return (
     <>
-      <Button className="mb-4" onClick={() => router.back()}>
-        Back
-      </Button>
+      <BackButton className="mb-4" />
       {children}
     </>
   );

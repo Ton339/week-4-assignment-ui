@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { Task } from "./tasks";
 import Image from "next/image";
 import Link from "next/link";
-import { User } from "../users/user";
 import {
   Table,
   TableBody,
@@ -23,6 +22,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import TaskPagination from "@/components/task-pagination";
+import CreateTaskDialog from "@/components/task/create-task-dialog";
+import UpdateTaskDialog from "@/components/task/update-task-dialog";
+import { DeleteTaskDialog } from "@/components/task/delete-task-dialog";
 
 // กำหนด Interface ให้ชัดเจนสำหรับการตอบกลับแบบแบ่งหน้า
 interface PaginatedResponse<T> {
@@ -42,35 +44,24 @@ async function getTasks(
 ): Promise<PaginatedResponse<Task>> {
   try {
     // NestJS supports pagination via _page and _per_page
-    const res = await fetch(`${API_URL}/task?_page=${page}&_per_page=${limit}`, {
-      cache: "no-store",
-    });
-    
+    const res = await fetch(
+      `${API_URL}/task?_page=${page}&_per_page=${limit}`,
+      {
+        cache: "no-store",
+      },
+    );
+
     if (!res.ok) {
-      console.warn(`Failed to fetch tasks: ${res.status}. Falling back to empty list.`);
+      console.warn(
+        `Failed to fetch tasks: ${res.status}. Falling back to empty list.`,
+      );
       return { data: [], pages: 0, next: null, prev: null };
     }
-    
+
     return await res.json();
   } catch (error) {
     console.error("Fetch tasks error:", error);
     return { data: [], pages: 0, next: null, prev: null };
-  }
-}
-
-// แยกฟังก์ชันดึงข้อมูล User
-async function getUsers(): Promise<User[]> {
-  try {
-    // NestJS might not have /users yet, handle 404 gracefully
-    const res = await fetch(`${API_URL}/users`, { cache: "no-store" });
-    if (!res.ok) {
-      console.warn(`Users endpoint returned ${res.status}. Returning empty array.`);
-      return [];
-    }
-    return res.json();
-  } catch (error) {
-    console.error("Fetch users error:", error);
-    return [];
   }
 }
 
@@ -83,31 +74,25 @@ export default async function TasksPage(props: {
   const rawPage = parseInt(searchParams.page as string, 10);
   const rawLimit = parseInt(searchParams.limit as string, 10);
   const page = isNaN(rawPage) ? 1 : rawPage;
-  const limit = isNaN(rawLimit) ? 25 : rawLimit;
+  const limit = isNaN(rawLimit) ? 10 : rawLimit;
 
   // ดึงข้อมูลแบบ Parallel
-  const [tasksData, users] = await Promise.all([
-    getTasks(page, limit),
-    getUsers(),
-  ]);
-
+  const [tasksData] = await Promise.all([getTasks(page, limit)]);
   const { data: tasks, pages: totalPages, next, prev } = tasksData;
 
-  // สร้าง Dictionary สำหรับ User Lookup O(1)
-  const userDict = users.reduce(
-    (acc, user) => {
-      acc[user.id] = user;
-      return acc;
-    },
-    {} as Record<string, User>,
-  );
+  if (tasks.length === 0) {
+    return (
+      <>
+        <CreateTaskDialog />
+        <h1 className="text-4xl font-bold pb-6">No tasks found</h1>
+      </>
+    );
+  }
 
   return (
     <>
-      <title>Tasks list</title>
-      <meta name="description" content="Tasks list" />
-      <link rel="icon" href="TASKS" />
 
+      <CreateTaskDialog />
       <div className="w-full max-w-5xl">
         <Table>
           <TableCaption>A list of tasks.</TableCaption>
@@ -117,12 +102,12 @@ export default async function TasksPage(props: {
               <TableHead className="w-[20%]">Status</TableHead>
               <TableHead className="w-[20%]">Priority</TableHead>
               <TableHead className="w-[25%]">Assigned To</TableHead>
+              <TableHead className="w-[10%]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {tasks.map((task) => {
-              const assignedUser = userDict[task.userId];
-
+            {tasks.map((task: Task) => {
+              const assignedUser = task.user;
               return (
                 <TableRow key={task.id}>
                   <TableCell className="font-medium">{task.title}</TableCell>
@@ -177,6 +162,12 @@ export default async function TasksPage(props: {
                     ) : (
                       <span className="text-gray-500 italic">Unassigned</span>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <UpdateTaskDialog task={task} />
+                      <DeleteTaskDialog task={task} />
+                    </div>
                   </TableCell>
                 </TableRow>
               );

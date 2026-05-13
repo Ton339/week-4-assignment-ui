@@ -17,7 +17,7 @@ export default function NavBar() {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem className="hidden md:flex">
-            <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+            <NavigationMenuTrigger>Menu</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                 {components.map((component) => (

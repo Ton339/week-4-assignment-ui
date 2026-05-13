@@ -57,9 +57,6 @@ async function ChartDataFetcher() {
 export default function DashboardPage() {
   return (
     <>
-      <title>Dashboard</title>
-      <meta name="description" content="Dashboard" />
-      <link rel="icon" href="/favicon.ico" />
       <h1 className="text-4xl font-bold pb-6 ">Dashboard</h1>
       <div className="justify-self-center w-full max-w-4xl mx-auto">
         {/* Suspense จะทำงานตอน ChartDataFetcher กำลังโหลดข้อมูล (await) */}
