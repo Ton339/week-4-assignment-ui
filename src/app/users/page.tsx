@@ -1,12 +1,15 @@
-import { UserCard } from "@/components/user-card";
+import { UserCard } from "@/components/user/user-card";
 import { User } from "./user";
 import Link from "next/link";
 import CreateUserDialog from "@/components/user/create-user-dialog";
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function getUsers(): Promise<User[]> {
   const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   try {
     const res = await fetch(`${API_URL}/user`, { cache: 'no-store' });
+    await sleep(1000);
     if (!res.ok) {
       console.warn(`Users API returned ${res.status}`);
       return [];

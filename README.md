@@ -112,3 +112,23 @@ npm run server
 
 - **Pagination (`/tasks`)**: URL-based state management (`?page=2&limit=25`). The server component reads `searchParams` and fetches exactly what is needed from the API, providing excellent SEO and shareable URLs.
 - **Suspense Bailout Fix**: Components relying on `useSearchParams` (like the pagination controls) are safely wrapped in `<Suspense>` boundaries to prevent Next.js Static Site Generation (SSG) errors during `npm run build`.
+
+## 🏗️ การออกแบบ CRUD และ Design Patterns
+
+เพื่อให้การจัดการข้อมูล (CRUD) มีประสิทธิภาพ สวยงาม และง่ายต่อการบำรุงรักษา โปรเจกต์นี้ใช้แนวทางการออกแบบดังนี้:
+
+### 1. สถาปัตยกรรม CRUD (Next.js Server Actions)
+เราใช้ **Next.js Server Actions** เป็นหัวใจหลักในการทำ Mutation:
+- **Server Actions**: ใช้ฟังก์ชัน `"use server"` เพื่อติดต่อกับ Backend API โดยตรง ช่วยลดความซับซ้อนของการจัดการ API Client-side
+- **Data Revalidation**: ใช้ `revalidatePath` ภายใน Action เพื่อล้าง Cache และดึงข้อมูลใหม่ทันทีหลังการอัปเดต ทำให้ UI เป็นปัจจุบันเสมอโดยไม่ต้อง Refresh หน้า
+
+### 2. Design Patterns ในหน้า UI
+- **Container/Presenter Pattern**: แยกส่วนการดึงข้อมูล (Server Components) ออกจากส่วนการแสดงผลและการตอบสนอง (Client Components)
+- **Compound Components Pattern**: ใช้แนวคิดของ Shadcn UI ในการสร้าง Component ที่ทำงานร่วมกันอย่างยืดหยุ่น (เช่น Dialog, Select)
+- **Schema-Driven Validation**: ใช้ **Zod** ร่วมกับ **React Hook Form** เพื่อให้การตรวจสอบข้อมูล (Validation) เป็นระเบียบและปลอดภัยทั้งหน้าบ้านและหลังบ้าน
+
+### 3. Visual & UX Excellence
+- **Contextual CRUD**: ใช้ **Dialog (Modal)** สำหรับการเพิ่มและแก้ไขข้อมูล เพื่อรักษา Flow การทำงานของผู้ใช้
+- **Responsive & Modern Design**: ใช้สี **OKLCH** และ Tailwind CSS เพื่อการแสดงผลที่สวยงาม ทันสมัย และรองรับ Dark Mode เต็มรูปแบบ
+- **Loading States**: มีการแสดง Loading Spinner หรือ Skeleton ในจุดที่เหมาะสมเพื่อให้ UX ดูลื่นไหล
+
