@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import TaskPagination from "@/components/task-pagination";
+import TaskPagination from "@/components/task/task-pagination";
 
 export default function Loading() {
   return (

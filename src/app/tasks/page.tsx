@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import TaskPagination from "@/components/task-pagination";
+import TaskPagination from "@/components/task/task-pagination";
 import CreateTaskDialog from "@/components/task/create-task-dialog";
 import UpdateTaskDialog from "@/components/task/update-task-dialog";
 import { DeleteTaskDialog } from "@/components/task/delete-task-dialog";
@@ -64,12 +64,13 @@ async function getTasks(
     return { data: [], pages: 0, next: null, prev: null };
   }
 }
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default async function TasksPage(props: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const searchParams = await props.searchParams;
-
+  await sleep(1000);
   // ป้องกัน Error กรณีผู้ใช้พิมพ์ URL parameter เป็นตัวอักษร (NaN)
   const rawPage = parseInt(searchParams.page as string, 10);
   const rawLimit = parseInt(searchParams.limit as string, 10);

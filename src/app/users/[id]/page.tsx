@@ -23,6 +23,8 @@ const statusColors: Record<string, string> = {
   Inactive: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export async function generateMetadata({
   params,
 }: {
@@ -32,6 +34,7 @@ export async function generateMetadata({
   const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   try {
     const res = await fetch(`${API_URL}/user/${id}`);
+    await sleep(1000);
     if (res.ok) {
       const user: User = await res.json();
       return {

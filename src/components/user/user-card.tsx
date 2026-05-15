@@ -5,10 +5,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "@/components/ui/card";
 import Image from "next/image";
-import { Badge } from "./ui/badge";
-import { Skeleton } from "./ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 const roleColors: Record<string, string> = {
   Admin: "bg-blue-50 text-blue-700 dark:bg-sky-950 dark:text-sky-300",
   Editor:

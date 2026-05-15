@@ -19,7 +19,7 @@ async function ChartDataFetcher() {
   const apiUrl = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
 
   // จำลองความช้าให้เห็นผลลัพธ์ของ Suspense
-  await sleep(2000);
+  await sleep(1000);
 
   const res = await fetch(`${apiUrl}/dashboardStats-monthlyViews`);
 
