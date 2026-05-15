@@ -91,7 +91,6 @@ export default async function TasksPage(props: {
 
   return (
     <>
-
       <CreateTaskDialog />
       <div className="w-full max-w-5xl">
         <Table>

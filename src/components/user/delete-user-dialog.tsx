@@ -46,7 +46,7 @@ export function DeleteUserDialog({ user }: { user: User }) {
                             Are you sure you want to delete this user?
                         </DialogDescription>
                     </DialogHeader>
-                    <DialogFooter>
+                    <DialogFooter className="pt-4">
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>

@@ -12,11 +12,13 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       API_URL: ${API_URL}
+      WATCHPACK_POLLING: "true" # เพิ่มบรรทัดนี้เพื่อให้ Hot Reload ทำงานชัวร์ๆ
     ports:
       - "3000:3000"
     volumes:
       - .:/app
       - /app/node_modules
+      - /app/.next # เพิ่มบรรทัดนี้เพื่อไม่ให้ไฟล์ build ซิงค์ออกมากวนเครื่องหลัก
     command: npm run dev
     networks:
       - shared_app_network

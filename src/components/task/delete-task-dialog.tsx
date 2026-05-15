@@ -10,8 +10,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import type { User } from "@/app/users/user"
-import { deleteUser } from "@/app/users/actions"
+import { deleteTask } from "@/app/tasks/actions"
 import { useState } from "react"
 import { Trash } from "lucide-react";
 import { Task } from "@/app/tasks/tasks";
@@ -23,10 +22,10 @@ export function DeleteTaskDialog({ task }: { task: Task }) {
         e.preventDefault(); // ✅ หยุดการ reload หน้าเว็บ
         setIsLoading(true);
         try {
-            //const result = await deleteTask(task.id);
-            //if (result && !result.success) {
-            //    alert(result.error);
-            //}
+            const result = await deleteTask(parseInt(task.id));
+            if (result && !result.success) {
+                alert(result.error);
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -42,12 +41,12 @@ export function DeleteTaskDialog({ task }: { task: Task }) {
             <DialogContent className="sm:max-w-sm">
                 <form onSubmit={handleDelete}>
                     <DialogHeader>
-                        <DialogTitle>Delete user</DialogTitle>
+                        <DialogTitle>Delete task</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete this user?
+                            Are you sure you want to delete this task?
                         </DialogDescription>
                     </DialogHeader>
-                    <DialogFooter>
+                    <DialogFooter className="pt-4">
                         <DialogClose asChild>
                             <Button variant="outline">Cancel</Button>
                         </DialogClose>

@@ -43,11 +43,10 @@ const userSchema = z.object({
 
 type UserFormValues = z.infer<typeof userSchema>;
 
-export default function UpdateUserDialog({ user, onSuccess }: { user: User, onSuccess?: (data?: unknown) => void }) {
+export default function UpdateUserDialog({ user }: { user: User }) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [dateOpen, setDateOpen] = React.useState(false)
-    const [date, setDate] = React.useState<Date | undefined>(user.birthdate ? new Date(user.birthdate) : undefined)
 
     // 2. ตั้งค่า React Hook Form
     const form = useForm<UserFormValues>({
@@ -65,7 +64,6 @@ export default function UpdateUserDialog({ user, onSuccess }: { user: User, onSu
         },
     });
 
-    // Reset form when user changes
     React.useEffect(() => {
         form.reset({
             name: user.name ?? "",
@@ -78,7 +76,6 @@ export default function UpdateUserDialog({ user, onSuccess }: { user: User, onSu
             phone: user.phone ?? "",
             occupation: user.occupation ?? "",
         });
-        setDate(user.birthdate ? new Date(user.birthdate) : undefined);
     }, [user, form]);
 
     // 3. ฟังก์ชัน Submit สำหรับยิง API ไปหา NestJS
@@ -97,9 +94,6 @@ export default function UpdateUserDialog({ user, onSuccess }: { user: User, onSu
 
             setOpen(false); // ปิด Dialog
             form.reset(); // ล้างค่าฟอร์ม
-
-            // 💡 เรียกฟังก์ชัน onSuccess() ถ้ามี (เช่น แจ้งเตือน หรือ ทำงานอื่นบน client)
-            if (onSuccess) onSuccess(result.data);
         } catch (error) {
             console.error(error);
             alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
@@ -174,20 +168,29 @@ export default function UpdateUserDialog({ user, onSuccess }: { user: User, onSu
                                 </Field>
                             )}
                         />
-                        <Field>
-                            <FieldLabel>Status</FieldLabel>
-                            <Select value={form.watch("status")} onValueChange={(value) => form.setValue("status", value)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Choose Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectItem value="Active">Active</SelectItem>
-                                        <SelectItem value="Inactive">Inactive</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </Field>
+                        <Controller
+                            name="status"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel>Status</FieldLabel>
+                                    <Select value={field.value} onValueChange={field.onChange}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Choose Status" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="Active">Active</SelectItem>
+                                                <SelectItem value="Inactive">Inactive</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    {fieldState.invalid && (
+                                        <FieldError errors={[fieldState.error]} />
+                                    )}
+                                </Field>
+                            )}
+                        />
                         <Field>
                             <FieldLabel>avatar</FieldLabel>
                             <Input {...form.register("avatar")} />
@@ -196,36 +199,44 @@ export default function UpdateUserDialog({ user, onSuccess }: { user: User, onSu
                             <FieldLabel>Address</FieldLabel>
                             <Textarea {...form.register("address")} />
                         </Field>
-                        <Field className="mx-auto w-44">
-                            <FieldLabel htmlFor="date">Date of birth</FieldLabel>
-                            <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        id="date"
-                                        type="button"
-                                        className="justify-start font-normal"
-                                    >
-                                        {date ? date.toLocaleDateString() : "Select date"}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={date}
-                                        defaultMonth={date}
-                                        captionLayout="dropdown"
-                                        onSelect={(date) => {
-                                            setDate(date)
-                                            setDateOpen(false)
-                                            if (date) {
-                                                form.setValue("birthdate", date.toISOString());
-                                            }
-                                        }}
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                        </Field>
+                        <Controller
+                            name="birthdate"
+                            control={form.control}
+                            render={({ field }) => {
+                                const date = field.value ? new Date(field.value) : undefined;
+                                return (
+                                    <Field className="mx-auto w-44">
+                                        <FieldLabel htmlFor="date">Date of birth</FieldLabel>
+                                        <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    id="date"
+                                                    type="button"
+                                                    className="justify-start font-normal"
+                                                >
+                                                    {date ? date.toLocaleDateString() : "Select date"}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={date}
+                                                    defaultMonth={date}
+                                                    captionLayout="dropdown"
+                                                    onSelect={(date) => {
+                                                        setDateOpen(false)
+                                                        if (date) {
+                                                            field.onChange(date.toISOString());
+                                                        }
+                                                    }}
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </Field>
+                                )
+                            }}
+                        />
                         <Field>
                             <FieldLabel>Phone</FieldLabel>
                             <Input {...form.register("phone")} />
