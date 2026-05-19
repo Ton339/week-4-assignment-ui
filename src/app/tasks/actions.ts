@@ -2,9 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 
-export async function createTask(payload: unknown) {
-  const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+// server api url
+const API_URL = process.env.API_URL;
 
+// create task
+export async function createTask(payload: unknown) {
+  
   try {
     const response = await fetch(`${API_URL}/task`, {
       method: "POST",
@@ -25,9 +28,27 @@ export async function createTask(payload: unknown) {
   }
 }
 
-export async function updateTask(id: number, payload: unknown) {
-  const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+// Read task
+export async function fetchMoreTasks(page: number, limit: number) {
+  try {
+    const res = await fetch(
+      `${API_URL}/task?_page=${page}&_per_page=${limit}`,
+      { cache: "no-store" },
+    );
 
+    if (!res.ok) {
+      return { data: [], next: null };
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Fetch tasks error:", error);
+    return { data: [], next: null };
+  }
+}
+
+// update task
+export async function updateTask(id: number, payload: unknown) {
   try {
     const response = await fetch(`${API_URL}/task/${id}`, {
       method: "PATCH",
@@ -48,9 +69,8 @@ export async function updateTask(id: number, payload: unknown) {
   }
 }
 
+// delete task
 export async function deleteTask(id: number) {
-  const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
-
   try {
     const response = await fetch(`${API_URL}/task/${id}`, {
       method: "DELETE",

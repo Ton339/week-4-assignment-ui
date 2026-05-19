@@ -14,8 +14,8 @@ import { deleteTask } from "@/app/tasks/actions"
 import { useState } from "react"
 import { Trash } from "lucide-react";
 import { Task } from "@/app/tasks/tasks";
-// ❌ ลบบรรทัด import form from "next/form" ออก
-export function DeleteTaskDialog({ task }: { task: Task }) {
+
+export default function DeleteTaskDialog({ task, onDelete }: { task: Task, onDelete: (id: string | number) => void }) {
     const [isLoading, setIsLoading] = useState(false);
     // ✅ แก้ไขให้รับ Event
     async function handleDelete(e: React.FormEvent) {
@@ -25,6 +25,10 @@ export function DeleteTaskDialog({ task }: { task: Task }) {
             const result = await deleteTask(parseInt(task.id));
             if (result && !result.success) {
                 alert(result.error);
+            } else {
+                if (onDelete) {
+                    onDelete(task.id);
+                }
             }
         } catch (error) {
             console.error(error);

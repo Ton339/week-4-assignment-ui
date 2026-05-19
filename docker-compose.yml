@@ -16,7 +16,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - .:/app
+      -     .:/app
       - /app/node_modules
       - /app/.next # เพิ่มบรรทัดนี้เพื่อไม่ให้ไฟล์ build ซิงค์ออกมากวนเครื่องหลัก
     command: npm run dev

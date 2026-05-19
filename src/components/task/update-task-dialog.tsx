@@ -32,7 +32,7 @@ const taskSchema = z.object({
 
 type TaskFormValues = z.infer<typeof taskSchema>;
 
-export default function UpdateTaskDialog({ task }: { task: Task }) {
+export default function UpdateTaskDialog({ task, onUpdate }: { task: Task, onUpdate: (task: Task) => void }) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
@@ -83,6 +83,16 @@ export default function UpdateTaskDialog({ task }: { task: Task }) {
             const result = await updateTask(parseInt(task.id), payload);
 
             if (!result.success) throw new Error(result.error);
+            
+            if (onUpdate && result.data) {
+                // ค้นหาข้อมูล User เต็มๆ จากลิสต์ที่มีอยู่ เพื่อเอามาแสดงในตารางทันที
+                const selectedUser = users.find(u => u.id.toString() === data.user_id);
+                const updatedTaskWithUser = {
+                    ...result.data,
+                    user: selectedUser || null
+                };
+                onUpdate(updatedTaskWithUser);
+            }
 
             setOpen(false); // ปิด Dialog
             form.reset(); // ล้างค่าฟอร์ม

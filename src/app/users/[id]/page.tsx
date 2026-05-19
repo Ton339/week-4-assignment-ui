@@ -34,7 +34,6 @@ export async function generateMetadata({
   const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   try {
     const res = await fetch(`${API_URL}/user/${id}`);
-    await sleep(1000);
     if (res.ok) {
       const user: User = await res.json();
       return {
@@ -43,7 +42,7 @@ export async function generateMetadata({
       };
     }
   } catch (error) {
-    console.error(error);
+    throw new Error(`Failed to fetch user data ${error}`);
   }
   return {
     title: "User Profile",
@@ -56,10 +55,10 @@ export default async function UserDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
   // Fetch user data using the id
   const API_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${API_URL}/user/${id}`);
+  await sleep(1000);
 
   if (!res.ok) {
     // This will activate the closest `error.tsx` Error Boundary
