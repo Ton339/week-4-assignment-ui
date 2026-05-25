@@ -47,7 +47,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <NavBar></NavBar>
-        <div className="container w-full px-12 py-4 justify-items-center">
+        <div className="w-full mx-auto px-4 md:px-12 py-4">
           {children}
         </div>
       </body>

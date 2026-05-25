@@ -14,8 +14,20 @@ import {
 import UpdateTaskDialog from '@/components/task/update-task-dialog';
 import DeleteTaskDialog from '@/components/task/delete-task-dialog';
 import { Task } from '@/app/tasks/tasks';
-import TaskSelect from './task-select';
+import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '../ui/skeleton';
+
+const statusColors: Record<string, string> = {
+    "Done": "bg-green-50 text-green-700 border-green-200/30 dark:bg-green-950 dark:text-green-300 dark:border-green-800/30",
+    "In Progress": "bg-blue-50 text-blue-700 border-blue-200/30 dark:bg-sky-950 dark:text-sky-300 dark:border-sky-800/30",
+    "Todo": "bg-amber-50 text-amber-700 border-amber-200/30 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800/30",
+};
+
+const priorityColors: Record<string, string> = {
+    "High": "bg-red-50 text-red-700 border-red-200/30 dark:bg-red-950 dark:text-red-300 dark:border-red-800/30",
+    "Medium": "bg-yellow-50 text-yellow-700 border-yellow-200/30 dark:bg-yellow-950 dark:text-yellow-300 dark:border-yellow-800/30",
+    "Low": "bg-zinc-100 text-zinc-700 border-zinc-200/30 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700/30",
+};
 
 interface TaskInfiniteListProps {
     initialTasks: Task[];
@@ -27,6 +39,14 @@ export function TaskInfiniteList({ initialTasks, initialNext, limit }: TaskInfin
     const [tasks, setTasks] = useState(initialTasks);
     const [nextPage, setNextPage] = useState<number | null>(initialNext);
     const [isLoading, setIsLoading] = useState(false);
+    const [prevInitialTasks, setPrevInitialTasks] = useState(initialTasks);
+
+    // ปรับ State ทันทีที่ Props เปลี่ยนแปลง (ท่าที่ React แนะนำ แทนการใช้ useEffect เพื่อป้องกัน Cascading Renders)
+    if (initialTasks !== prevInitialTasks) {
+        setTasks(initialTasks);
+        setNextPage(initialNext);
+        setPrevInitialTasks(initialTasks);
+    }
 
 
     // ใช้ Ref เพื่อเก็บค่าล่าสุด ป้องกันการสร้าง Observer ใหม่ทุกครั้งที่ state เปลี่ยน (สาเหตุของ loop)
@@ -103,7 +123,7 @@ export function TaskInfiniteList({ initialTasks, initialNext, limit }: TaskInfin
 
     // ลบ useEffect ตัวเก่าที่ใช้ observerTarget.current ออก เพราะเราใช้ Callback Ref แทนแล้ว
     return (
-        <div className="w-full max-w-5xl">
+        <div className="w-full max-w-5xl mx-auto">
             <Table className="text-pretty">
                 <TableCaption>A list of tasks.</TableCaption>
                 <TableHeader>
@@ -124,10 +144,14 @@ export function TaskInfiniteList({ initialTasks, initialNext, limit }: TaskInfin
                                     {task.title}
                                 </TableCell>
                                 <TableCell>
-                                    <TaskSelect defaultValue={task.status} type="status" />
+                                    <Badge variant="secondary" className={statusColors[task.status] || "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"}>
+                                        {task.status}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell>
-                                    <TaskSelect defaultValue={task.priority} type="priority" />
+                                    <Badge variant="secondary" className={priorityColors[task.priority] || "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"}>
+                                        {task.priority}
+                                    </Badge>
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-2">
@@ -168,10 +192,10 @@ export function TaskInfiniteList({ initialTasks, initialNext, limit }: TaskInfin
                                     <Skeleton className="h-5 w-3/4" />
                                 </TableCell>
                                 <TableCell>
-                                    <Skeleton className="h-9 w-full max-w-[120px] rounded-md" />
+                                    <Skeleton className="h-5 w-16 rounded-full" />
                                 </TableCell>
                                 <TableCell>
-                                    <Skeleton className="h-9 w-full max-w-[120px] rounded-md" />
+                                    <Skeleton className="h-5 w-16 rounded-full" />
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-2">

@@ -13,16 +13,20 @@ import CreateTaskDialog from "@/components/task/create-task-dialog";
 export default function Loading() {
   return (
     <>
-      <CreateTaskDialog />
-      <div className="w-full max-w-5xl">
+      <div className="w-full">
+        <div className="flex justify-end mb-4">
+          <CreateTaskDialog />
+        </div>
+      </div>
+      <div className="w-full max-w-5xl mx-auto">
         <Table>
           <TableCaption>Loading tasks...</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[35%]">Task Name</TableHead>
-              <TableHead className="w-[20%]">Status</TableHead>
-              <TableHead className="w-[20%]">Priority</TableHead>
-              <TableHead className="w-[25%]">Assigned To</TableHead>
+              <TableHead className="w-[30%]">Task Name</TableHead>
+              <TableHead className="w-[15%]">Status</TableHead>
+              <TableHead className="w-[15%]">Priority</TableHead>
+              <TableHead className="w-[30%]">Assigned To</TableHead>
               <TableHead className="w-[10%]">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -33,10 +37,10 @@ export default function Loading() {
                   <Skeleton className="h-5 w-3/4" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-9 w-full max-w-[120px] rounded-md" />
+                  <Skeleton className="h-5 w-16 rounded-full" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-9 w-full max-w-[120px] rounded-md" />
+                  <Skeleton className="h-5 w-16 rounded-full" />
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">

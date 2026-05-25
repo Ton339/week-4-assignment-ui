@@ -51,7 +51,11 @@ export default async function TasksPage() {
 
   return (
     <>
-      <CreateTaskDialog />
+      <div className="w-full">
+        <div className="flex justify-end mb-4">
+          <CreateTaskDialog />
+        </div>
+      </div>
       <TaskInfiniteList
         initialTasks={tasks}
         initialNext={next}
