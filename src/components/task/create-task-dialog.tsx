@@ -91,7 +91,7 @@ export default function CreateTaskDialog() {
         <Dialog open={open} onOpenChange={setOpen}>
 
             <DialogTrigger asChild>
-                <Button type="button"><PlusIcon /> Create new user</Button>
+                <Button type="button"><PlusIcon /> Create new task</Button>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-md">

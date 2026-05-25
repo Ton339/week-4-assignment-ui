@@ -5,7 +5,7 @@ export default function Loading() {
     return (
         <>
             <div className="w-full">
-                <div className="flex justify-end">
+                <div className="flex justify-end mb-4">
                     <CreateUserDialog />
                 </div>
             </div>

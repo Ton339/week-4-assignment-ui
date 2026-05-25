@@ -54,10 +54,10 @@ export function UserCard({ user }: { user: User | null }) {
           height={200}
           className="w-20 h-20 rounded-full object-cover"
         />
-        <div className="flex-1">
-          <CardHeader>
-            <CardTitle>{user.name}</CardTitle>
-            <CardDescription>{user.email}</CardDescription>
+        <div className="flex-1 min-w-0">
+          <CardHeader className="min-w-0">
+            <CardTitle className="break-all whitespace-normal min-w-0">{user.name}</CardTitle>
+            <CardDescription className="break-all whitespace-normal min-w-0">{user.email}</CardDescription>
           </CardHeader>
           <CardContent className="flex gap-2">
             <div className="gap-2 mt-2">
