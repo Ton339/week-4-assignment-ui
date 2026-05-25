@@ -13,8 +13,11 @@ export default function DashboardLayout({
 }) {
   return (
     <>
-      <BackButton className="mb-4" />
-      {children}
+      <BackButton className="mb-4 " />
+      <h1 className="text-4xl font-bold">Dashboard</h1>
+      <div className="container w-full px-12 py-4 justify-items-center mb-8">
+        {children}
+      </div>
     </>
   );
 }
