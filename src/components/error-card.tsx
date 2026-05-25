@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -7,10 +8,12 @@ import {
 } from "./ui/card";
 import { AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
-export function ErrorCard() {
+export function ErrorCard({ error }: { error: Error }) {
+  const router = useRouter();
   function handleReset() {
-    window.location.reload();
+    router.refresh();
   }
   return (
     <Card className="w-lg p-4 border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/20">
@@ -22,7 +25,7 @@ export function ErrorCard() {
           Something went wrong!
         </CardTitle>
         <CardDescription className="text-red-600/80 dark:text-red-400/80">
-          Unexpected error occurred while fetching user data.
+          {error.message}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center pt-4">
